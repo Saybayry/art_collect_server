@@ -1,5 +1,6 @@
 package com.example.demo.art.model;
 
+import com.example.demo.user.model.User;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -82,6 +83,9 @@ public class Art {
 
     @JoinColumn(nullable = true)
     private Integer popularity;
+
+    @JoinColumn(nullable = true)
+    private User owner;
 
 
     public Long getId() {
