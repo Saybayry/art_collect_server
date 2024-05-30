@@ -2,13 +2,15 @@ package com.example.demo.art.controller;
 
 import com.example.demo.art.model.*;
 import com.example.demo.art.service.*;
+import com.example.demo.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.security.core.Authentication;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -83,6 +85,19 @@ public class ArtController {
             @RequestParam("size") Long size,
             @RequestParam("tags") String tags,
             @RequestParam("image") MultipartFile image) {
+            User user = new User();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            user = (User) authentication.getPrincipal();
+            Long userId = user.getId();
+            String username = user.getUsername();
+
+            // Использование идентификатора пользователя (или других данных) из токена
+            System.out.println("Current logged in user ID: " + userId);
+            System.out.println("Current logged in username: " + username);
+
+
+        }
 
         if (!image.isEmpty()) {
             try {
@@ -120,8 +135,8 @@ public class ArtController {
                 Technique technique = techniqueService.findById(techniqueId).orElse(null) ;
                 Artist artist = artistService.findById(artistId).orElse(null)  ;
 
-
-                Art artwork = new Art(name, genre, artMovement, technique, artist, creationDate, size, tags, imageName);
+                System.out.println("user" + user.getId());
+                Art artwork = new Art(name, genre, artMovement, technique, artist, creationDate, size, tags, imageName,user);
                 artService.saveArt(artwork);
 
 
@@ -158,6 +173,18 @@ public class ArtController {
         }
         return artService.findByArtist(artist);
     }
-
+    @GetMapping("/my-arts")
+    public List<Art> getMyArts() {
+        // Получение текущего аутентифицированного пользователя
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            User user = (User) authentication.getPrincipal();
+            System.out.println(user);
+            System.out.println(user.getId());
+            System.out.println(artService.findByOwner(user));
+            return artService.findByOwner(user);
+        }
+        return null; // Или обработка случая, когда пользователь не аутентифицирован
+    }
     // Другие методы контроллера, если необходимо
 }

@@ -3,6 +3,7 @@ package com.example.demo.art.service;
 import com.example.demo.art.model.Art;
 import com.example.demo.art.model.Artist;
 import com.example.demo.art.repository.ArtRepository;
+import com.example.demo.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +36,13 @@ public class ArtService {
         return artRepository.findByArtist(artist);
     }
 
+
     public Art saveArt(Art art) {
         return artRepository.save(art);
+    }
+
+    public List<Art> findByOwner(User user) {
+        return artRepository.findByOwner(user);
     }
     // Другие методы сервиса, если необходимо
 }

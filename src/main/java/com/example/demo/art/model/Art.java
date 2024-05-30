@@ -23,7 +23,7 @@ public class Art {
     public Art() {
         // Пустой конструктор
     }
-    public Art(String name, Genre genre, ArtMovement artMovement, Technique technique, Artist artist, Date creationDate, Long size, String tags, String imageName) {
+    public Art(String name, Genre genre, ArtMovement artMovement, Technique technique, Artist artist, Date creationDate, Long size, String tags, String imageName, User owner) {
         this.name = name;
         this.genre = genre;
         this.artMovement = artMovement;
@@ -31,9 +31,11 @@ public class Art {
         this.artist = artist ;
         this.creationDate = creationDate;
         this.size = size;
+        this.owner = owner;
 //        this.tags = tags;
         this.imagePath = imageName;
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -83,7 +85,7 @@ public class Art {
 
     @JoinColumn(nullable = true)
     private Integer popularity;
-
+    @ManyToOne
     @JoinColumn(nullable = true)
     private User owner;
 
@@ -182,6 +184,14 @@ public class Art {
 
     public void setPopularity(Integer popularity) {
         this.popularity = popularity;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
 
